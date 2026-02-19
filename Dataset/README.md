@@ -101,13 +101,4 @@ Data augmentation is applied only to the training set.
 
 ---
 
-This version is:
-
-✔ Clean Markdown  
-✔ GitHub-ready  
-✔ Reviewer-friendly  
-✔ Reproducible  
-✔ Matches your paper exactly  
-
-If you want, I can now give you a **top-level repository README.md** that looks like a CVPR or IEEE submission repo 😎
 
