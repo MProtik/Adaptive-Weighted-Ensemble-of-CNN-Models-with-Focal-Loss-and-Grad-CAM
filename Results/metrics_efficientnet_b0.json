@@ -1,0 +1,5 @@
+{
+    "model": "efficientnet_b0",
+    "test_accuracy": 0.7477656405163853,
+    "test_f1": 0.7243689008255938
+}
