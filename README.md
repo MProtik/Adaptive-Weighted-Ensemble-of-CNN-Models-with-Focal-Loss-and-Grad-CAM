@@ -1,284 +1,165 @@
 <div align="center">
 
-<!-- ANIMATED HEADER BANNER -->
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e3a5f,100:0ea5e9&height=200&section=header&text=Skin%20Lesion%20AI&fontSize=52&fontColor=ffffff&fontAlignY=38&desc=Adaptive%20Weighted%20Ensemble%20%E2%80%A2%20Focal%20Loss%20%E2%80%A2%20Grad-CAM&descAlignY=60&descSize=16&animation=fadeIn"/>
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e3a5f,100:0ea5e9&height=200&section=header&text=Skin%20Lesion%20AI&fontSize=52&fontColor=ffffff&fontAlignY=38&desc=Adaptive%20Weighted%20Ensemble%20%E2%80%A2%20HAM10000%20%E2%80%A2%20Grad-CAM%20Explainability&descAlignY=60&descSize=16&animation=fadeIn"/>
+# Adaptive Weighted Ensemble of CNN Models with Focal Loss and Grad-CAM Explainability for Skin Lesion Classification
 
-<!-- BADGES ROW 1 - Status & Core Info -->
-
-<p>
-  <img src="https://img.shields.io/badge/Paper-Under%20Review%20%C2%B7%20Springer%20PRIA-22c55e?style=for-the-badge&logo=springer&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/PyTorch-Framework-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/>
-  <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge&logo=opensourceinitiative&logoColor=white"/>
-</p>
-
-<!-- BADGES ROW 2 - Models & Dataset -->
+**Mokabbir Zaman Protik**
 
 <p>
-  <img src="https://img.shields.io/badge/Dataset-HAM10000-6366f1?style=for-the-badge&logo=kaggle&logoColor=white"/>
-  <img src="https://img.shields.io/badge/ResNet34-Model%201-0ea5e9?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/ResNet50-Model%202-06b6d4?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/EfficientNet--B0-Model%203-8b5cf6?style=for-the-badge"/>
-</p>
-
-<!-- BADGES ROW 3 - Techniques -->
-
-<p>
-  <img src="https://img.shields.io/badge/Focal%20Loss-Class%20Imbalance-ef4444?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Grad--CAM-Explainability-f97316?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Transfer%20Learning-ImageNet%20Pretrained-10b981?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Paper-Under%20Review%20%C2%B7%20Springer%20PRIA-22c55e?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Dataset-HAM10000-6366f1?style=for-the-badge"/>
 </p>
 
 </div>
 
------
+---
 
-## 📌 At a Glance
+## Overview
 
-> **A weighted ensemble transfer learning framework** that fuses ResNet34, ResNet50, and EfficientNet-B0 for automated skin cancer classification on the HAM10000 dataset — featuring adaptive model weighting, Focal Loss for class imbalance, and Grad-CAM heatmaps for clinical explainability.
+Single CNN models for skin lesion classification often give unstable predictions and do not generalize well. Many ensembles try to fix this by averaging models equally, even though some models are more reliable than others. They also rarely show *why* they made a prediction.
+
+This project combines three fine-tuned CNNs (**ResNet34, ResNet50, EfficientNet-B0**) into an ensemble where each model's vote is **weighted by its validation F1 score**. Models are trained with **Focal Loss** to handle HAM10000's heavy class imbalance, and **Grad-CAM** heatmaps show which part of the image each model looked at.
+
+The paper is currently **under review at *Pattern Recognition and Image Analysis* (Springer), 2026**.
+
+## Results
+
+Test set results (custom stratified 80:10:10 split of HAM10000):
 
 <div align="center">
 
-|Metric           |ResNet34|ResNet50|EfficientNet-B0|🏆 Weighted Ensemble|
-|:---------------:|:------:|:------:|:-------------:|:-----------------:|
-|**Test Accuracy**|0.7587  |0.7646  |0.7478         |**0.7974**         |
-|**Weighted F1**  |0.7449  |0.7477  |0.7244         |**0.7782**         |
-
-
-> ✅ The ensemble outperforms every individual model — **+3.3 points accuracy and +3.1 points weighted F1** over the best single model (ResNet50).
-
-</div>
-
------
-
-## 🧠 Why This Research Matters
-
-Skin cancer is one of the most prevalent cancers globally. Early diagnosis dramatically improves survival rates, yet traditional methods are:
-
-- 🕒 **Time-consuming** — dependent on specialist availability
-- 👁️ **Subjective** — even experienced dermatologists misclassify lesions
-- ⚖️ **Inconsistent** — no standardized automated pipeline
-
-This project builds an **explainable AI pipeline** that addresses all three.
-
------
-
-## 🏗️ System Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                  HAM10000 Input Image                    │
-│              (10,015 dermoscopic images)                 │
-└─────────────────────┬───────────────────────────────────┘
-                       │
-          ┌────────────▼────────────┐
-          │   Preprocessing Pipeline │
-          │  • Resize → 224×224     │
-          │  • ImageNet Normalization│
-          │  • Augmentation         │
-          │  • Class Rebalancing    │
-          └────────────┬────────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        ▼              ▼              ▼
-  ┌──────────┐  ┌──────────┐  ┌──────────────┐
-  │ ResNet34 │  │ ResNet50 │  │EfficientNet  │
-  │ 34 layers│  │ 50 layers│  │     B0       │
-  │ w₁= 0.33 │  │ w₂= 0.34 │  │  w₃= 0.33   │
-  └────┬─────┘  └────┬─────┘  └──────┬───────┘
-       │              │               │
-       └──────────────▼───────────────┘
-                       │
-          ┌────────────▼────────────┐
-          │  Adaptive Soft Voting   │
-          │  ŷ = w₁p₁ + w₂p₂ + w₃p₃│
-          │  (F1-normalized weights) │
-          └────────────┬────────────┘
-                       │
-        ┌──────────────▼──────────────┐
-        │     Final Prediction         │
-        │  7 Skin Lesion Classes       │
-        └──────────────┬──────────────┘
-                       │
-          ┌────────────▼────────────┐
-          │   Grad-CAM Heatmaps     │
-          │ (Visual Explainability) │
-          └─────────────────────────┘
-```
-
------
-
-## 📂 Repository Structure
-
-```
-📦 Adaptive-Weighted-Ensemble-of-CNN-Models-with-Focal-Loss-and-Grad-CAM/
-├── 📁 Dataset/      # HAM10000 setup and preprocessing
-├── 📁 Notebooks/    # Training, ensemble, evaluation and Grad-CAM notebooks
-├── 📁 Results/      # Training curves, metrics and Grad-CAM heatmaps
-└── 📄 README.md
-```
-
------
-
-## ⚙️ Methodology
-
-### 1️⃣ Dataset — HAM10000
-
-<div align="center">
-
-|Class  |Description          |Images|% of Dataset|
-|:-----:|:--------------------|:----:|:----------:|
-|`NV`   |Melanocytic nevi     |6,705 |66.9%       |
-|`MEL`  |Melanoma             |1,113 |11.1%       |
-|`BKL`  |Benign keratosis-like|1,099 |10.9%       |
-|`BCC`  |Basal cell carcinoma |514   |5.1%        |
-|`AKIEC`|Actinic keratosis    |327   |3.2%        |
-|`VASC` |Vascular lesions     |142   |1.4%        |
-|`DF`   |Dermatofibroma       |115   |1.1%        |
+| Model | Test Accuracy | Weighted F1 |
+|:--|:--:|:--:|
+| ResNet34 | 0.7587 | 0.7449 |
+| ResNet50 | 0.7646 | 0.7477 |
+| EfficientNet-B0 | 0.7478 | 0.7244 |
+| **Weighted Ensemble (proposed)** | **0.7974** | **0.7782** |
 
 </div>
 
+The ensemble beats the best single model (ResNet50) by **+3.3 points in accuracy** and **+3.1 points in weighted F1**.
 
-> ⚠️ **Class Imbalance Challenge**: NV makes up ~67% of the dataset — a major challenge addressed by Focal Loss + oversampling.
+## Method
 
-### 2️⃣ Focal Loss for Class Imbalance
+```
+HAM10000 image
+      │
+      ▼
+Preprocessing: resize 256×256 → random crop 224×224,
+flips, ±5° rotation, brightness/contrast, ImageNet normalization
+      │
+      ├──────────────┬──────────────┐
+      ▼              ▼              ▼
+  ResNet34       ResNet50     EfficientNet-B0
+  (w₁ = 0.33)    (w₂ = 0.34)   (w₃ = 0.33)
+      │              │              │
+      └──────── weighted soft voting ┘
+                     │
+                     ▼
+        Final prediction (7 classes)
+                     │
+                     ▼
+            Grad-CAM heatmaps
+```
 
-Instead of standard Cross-Entropy, we use **Focal Loss** (Lin et al., 2017):
+### 1. Dataset
 
-$$FL(p_t) = -\alpha_t (1 - p_t)^\gamma \log(p_t)$$
+HAM10000 has 10,015 dermoscopic images across 7 classes. It is very imbalanced: melanocytic nevi (NV) make up about 67% of the images.
 
-With canonical values **γ = 2, α = 0.25** — this down-weights easy majority-class examples and focuses training on hard, rare cases like DF and VASC.
+| Class | Description | Images |
+|:--:|:--|:--:|
+| NV | Melanocytic nevi | 6,705 |
+| MEL | Melanoma | 1,113 |
+| BKL | Benign keratosis-like lesions | 1,099 |
+| BCC | Basal cell carcinoma | 514 |
+| AKIEC | Actinic keratosis / intraepithelial carcinoma | 327 |
+| VASC | Vascular lesions | 142 |
+| DF | Dermatofibroma | 115 |
 
-### 3️⃣ Adaptive Weighted Ensemble
+The data was split **80% train / 10% validation / 10% test** with stratified sampling, so every split keeps the same class balance.
 
-Ensemble weights are derived from each model’s **validation F1 score**, then normalized:
+### 2. Handling class imbalance
+
+Three things work together:
+- **Focal Loss** instead of cross-entropy, with γ = 2 and α = 0.25. It gives less weight to easy, common examples and more to hard, rare ones.
+- **Oversampling** of minority classes.
+- **Class weights** adjusted for the imbalance.
+
+### 3. Fine-tuning
+
+All three models start from ImageNet weights. Only the final layer is replaced to output the 7 lesion classes, and every model uses the same training setup so the comparison is fair.
+
+| Setting | Value |
+|:--|:--|
+| Optimizer | Adam, learning rate 1×10⁻⁴, weight decay 3×10⁻⁶ |
+| LR scheduler | ReduceLROnPlateau (factor 0.5, patience 3, on validation F1) |
+| Batch size | 64 |
+| Epochs | 30 |
+| Early stopping | patience 5 (never triggered; all models trained smoothly for 30 epochs) |
+| Checkpoint | best validation F1 |
+| Framework | PyTorch, GPU |
+
+### 4. Adaptive weighted ensemble
+
+Each model's weight comes from its validation F1 score, normalized so the weights add up to 1:
 
 $$w_m = \frac{F1_m}{\sum_{i=1}^{3} F1_i}$$
 
-Final prediction via soft voting:
+The final probability for each class is the weighted sum of the three models' probabilities, and the class with the highest score wins:
 
-$$\hat{y} = \arg\max \left( w_1 p^{(1)}_i + w_2 p^{(2)}_i + w_3 p^{(3)}_i \right)$$
+$$y_i = w_1 p^{(1)}_i + w_2 p^{(2)}_i + w_3 p^{(3)}_i, \qquad \hat{y} = \arg\max_i \, y_i$$
 
-This ensures **stronger models have greater influence** — unlike naive averaging which treats all models equally.
+The resulting weights were **w₁ = 0.33 (ResNet34), w₂ = 0.34 (ResNet50), w₃ = 0.33 (EfficientNet-B0)**. They are close because the three models performed similarly, but the stronger model still gets more say.
 
-### 4️⃣ Grad-CAM Explainability
+### 5. Grad-CAM explainability
 
-Gradient-weighted Class Activation Mapping (Selvaraju et al., 2017) generates **visual heatmaps** showing which image regions drove the model’s decision — critical for **clinical trust**.
+Grad-CAM heatmaps were generated for each model and for the ensemble on three example lesions:
 
-Key finding: When EfficientNet-B0 failed to activate on a DF lesion, the ensemble’s heatmap **recovered correct focus** using the ResNet models’ attention.
+| Lesion | Image ID | What happened |
+|:--|:--|:--|
+| VASC | ISIC_0033450 | All models found the central vascular area. The ensemble kept that focus and covered the lesion edge slightly better. |
+| NV | ISIC_0030957 | All models found the pigmented area. The ensemble heatmap was balanced and followed the lesion outline closely. |
+| DF | ISIC_0029967 | EfficientNet-B0 showed almost no activation on the lesion. The ensemble still focused correctly, using the ResNet models' attention. |
 
------
+The DF case shows the main benefit: when one model fails, the ensemble can still look at the right place.
 
-## 🚀 Quickstart
+## Repository structure
 
-### Prerequisites
-
-```bash
-pip install torch torchvision efficientnet-pytorch grad-cam numpy matplotlib scikit-learn pandas jupyter
+```
+├── Dataset/      HAM10000 setup and preprocessing
+├── Notebooks/    Training, ensemble, evaluation and Grad-CAM
+├── Results/      Training curves, metrics and heatmaps
+└── README.md
 ```
 
-### Clone
+## How to run
 
 ```bash
 git clone https://github.com/MProtik/Adaptive-Weighted-Ensemble-of-CNN-Models-with-Focal-Loss-and-Grad-CAM.git
 cd Adaptive-Weighted-Ensemble-of-CNN-Models-with-Focal-Loss-and-Grad-CAM
+pip install torch torchvision grad-cam numpy pandas matplotlib scikit-learn jupyter
 ```
 
-### Download HAM10000
+1. Download HAM10000 from [Kaggle](https://www.kaggle.com/datasets/kmader/skin-cancer-mnist-ham10000) or the [ISIC archive](https://challenge.isic-archive.com/data/) and place it in `Dataset/`.
+2. Open the notebooks in `Notebooks/` and run them in order: train the three base models, build the weighted ensemble, then generate Grad-CAM heatmaps.
+3. Outputs are saved in `Results/`.
 
-```bash
-kaggle datasets download -d kmader/skin-lesion-analysis-toward-melanoma-detection
-unzip skin-lesion-analysis-toward-melanoma-detection.zip -d Dataset/
-```
+## Limitations
 
-### Run
+- Rare classes (DF, VASC) still have weaker recall because there are so few examples.
+- Tested on HAM10000 only, so performance on images from other clinics or cameras is unknown.
+- Grad-CAM is a visual, qualitative check. It does not measure how reliable an explanation is.
+- Running three models costs more compute than one, which matters for real-time or edge use.
 
-Open the notebooks in `Notebooks/` and run them in order: train the three base models, build the weighted ensemble, then generate Grad-CAM heatmaps. Outputs are saved to `Results/`.
+## Future work
 
------
+- Add more varied architectures such as ConvNeXt, DenseNet and Vision Transformers.
+- Try Bayesian or uncertainty-aware weighting so predictions come with confidence estimates.
+- Use Grad-CAM++ or Layer-wise Relevance Propagation for explanations that can be measured.
 
-## 📊 Training Configuration
-
-|Hyperparameter|Value                                            |
-|:-------------|:------------------------------------------------|
-|Optimizer     |Adam                                             |
-|Learning Rate |`1 × 10⁻⁴`                                       |
-|Weight Decay  |`3 × 10⁻⁶`                                       |
-|Batch Size    |64                                               |
-|Epochs        |30                                               |
-|LR Scheduler  |ReduceLROnPlateau (factor=0.5, patience=3)       |
-|Early Stopping|patience=5 (did not trigger — stable convergence)|
-|Loss Function |Focal Loss (γ=2, α=0.25)                         |
-|Input Size    |224 × 224                                        |
-|Pretrained    |ImageNet                                         |
-|Split         |80% train / 10% val / 10% test                   |
-
------
-
-## 📈 Results Summary
-
-<div align="center">
-
-```
-Individual Models vs. Weighted Ensemble
-────────────────────────────────────────────────────────
-Model             Test Accuracy    Weighted F1
-────────────────────────────────────────────────────────
-ResNet34          0.7587           0.7449
-ResNet50          0.7646           0.7477
-EfficientNet-B0   0.7478           0.7244
-────────────────────────────────────────────────────────
-Weighted Ensemble 0.7974 ▲+3.3 pts 0.7782 ▲+3.1 pts
-────────────────────────────────────────────────────────
-```
-
-</div>
-
-### Key Takeaways
-
-- ✅ **Ensemble beats all individual models** on both accuracy and F1
-- ✅ **Focal Loss** improved recall for underrepresented classes (DF, VASC)
-- ✅ **Grad-CAM ensemble heatmaps** are more stable than any single model’s — even compensating when one model fails
-- ✅ **No overfitting** observed — training and validation curves converge cleanly across all 30 epochs
-
------
-
-## 🔬 Grad-CAM Visual Results
-
-> Heatmaps generated for three representative lesion cases: VASC, NV, and DF
-
-|Case               |Patient   |Lesion         |Ensemble Behavior                                              |
-|:-----------------:|:--------:|:-------------:|:--------------------------------------------------------------|
-|VASC (ISIC_0033450)|Male, 15  |Chest          |All models correctly focused on central vascular region        |
-|NV (ISIC_0030957)  |Female, 35|Back           |Ensemble produced sharp, balanced pigmented-area coverage      |
-|DF (ISIC_0029967)  |Female, 65|Lower extremity|EfficientNet-B0 failed; ensemble recovered via ResNet attention|
-
-
-> 📁 Heatmap outputs are in the `Results/` folder.
-
------
-
-## 🧩 Technical Stack
-
-<div align="center">
-
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
-![NumPy](https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-11557c?style=flat-square)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)
-![Kaggle](https://img.shields.io/badge/HAM10000-Kaggle-20BEFF?style=flat-square&logo=kaggle&logoColor=white)
-![CUDA](https://img.shields.io/badge/CUDA-GPU%20Accelerated-76B900?style=flat-square&logo=nvidia&logoColor=white)
-
-</div>
-
------
-
-## 📖 Citation
-
-If you use this work, please cite:
+## Citation
 
 ```bibtex
 @unpublished{protik2026ensemble,
@@ -290,58 +171,19 @@ If you use this work, please cite:
 }
 ```
 
------
+## Key references
 
-## 📚 References
+1. He et al. *Deep Residual Learning for Image Recognition.* CVPR 2016.
+2. Tan & Le. *EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks.* ICML 2019.
+3. Lin et al. *Focal Loss for Dense Object Detection.* ICCV 2017.
+4. Selvaraju et al. *Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization.* ICCV 2017.
+5. Tschandl et al. *The HAM10000 Dataset.* Scientific Data 2018.
+6. Li & Luo. *Performance-weighted-voting model.* Quantitative Biology 2020.
 
-|#  |Paper                                                                           |
-|:--|:-------------------------------------------------------------------------------|
-|[1]|He et al. — *Deep Residual Learning for Image Recognition*, CVPR 2016           |
-|[2]|Tschandl et al. — *The HAM10000 Dataset*, Scientific Data 2018                  |
-|[3]|Tan & Le — *EfficientNet: Rethinking Model Scaling for CNNs*, ICML 2019         |
-|[4]|Selvaraju et al. — *Grad-CAM: Visual Explanations from Deep Networks*, ICCV 2017|
-|[5]|Lin et al. — *Focal Loss for Dense Object Detection*, ICCV 2017                 |
+## Author
 
------
+**Mokabbir Zaman Protik**
+B.Sc. in Computer Science, The People's University of Bangladesh
 
-## 🚧 Limitations & Future Work
-
-**Current Limitations:**
-
-- Tested on HAM10000 only — generalization to other skin image datasets is untested
-- Rare classes (DF, VASC) still underperform due to extreme data scarcity
-- Grad-CAM provides qualitative, not quantitative, explanation reliability
-- Ensemble inference is slower than single-model deployment
-
-**Planned Extensions:**
-
-- [ ] Add ConvNeXt, DenseNet, and Vision Transformers (ViT) to the ensemble
-- [ ] Implement Bayesian uncertainty-aware weighting for calibrated confidence
-- [ ] Upgrade to Grad-CAM++ / Layer-wise Relevance Propagation (LRP)
-- [ ] GAN-based augmentation for minority class oversampling
-
------
-
-## 👤 Author
-
-<div align="center">
-
-**Mokabbir Zaman Protik**  
-Department of Computer Science and Engineering  
-The People’s University of Bangladesh, Narsingdi
-
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github)](https://github.com/MProtik)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/Mokabbir_Protik)
-[![Email](https://img.shields.io/badge/Email-Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:Mokabbir.Zaman.Protik@gmail.com)
-
-</div>
-
------
-
-<div align="center">
-
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0ea5e9,50:1e3a5f,100:0f172a&height=120&section=footer"/>
-
-*Built for clinical impact — where AI meets dermatology.*
-
-</div>
+[![GitHub](https://img.shields.io/badge/GitHub-MProtik-181717?style=flat-square&logo=github)](https://github.com/MProtik)
+[![Email](https://img.shields.io/badge/Email-Contact-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:mokabbir.zaman.protik@gmail.com)
