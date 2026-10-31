@@ -7,7 +7,7 @@
 <!-- BADGES ROW 1 - Status & Core Info -->
 
 <p>
-  <img src="https://img.shields.io/badge/Status-Research%20Complete-22c55e?style=for-the-badge&logo=checkmarx&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Paper-Under%20Review%20%C2%B7%20Springer%20PRIA-22c55e?style=for-the-badge&logo=springer&logoColor=white"/>
   <img src="https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
   <img src="https://img.shields.io/badge/PyTorch-Framework-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/>
   <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge&logo=opensourceinitiative&logoColor=white"/>
@@ -46,7 +46,7 @@
 |**Weighted F1**  |0.7449  |0.7477  |0.7244         |**0.7782**         |
 
 
-> ✅ The ensemble outperforms every individual model — **~3% accuracy gain** over the best single model (ResNet50).
+> ✅ The ensemble outperforms every individual model — **+3.3 points accuracy and +3.1 points weighted F1** over the best single model (ResNet50).
 
 </div>
 
@@ -60,7 +60,7 @@ Skin cancer is one of the most prevalent cancers globally. Early diagnosis drama
 - 👁️ **Subjective** — even experienced dermatologists misclassify lesions
 - ⚖️ **Inconsistent** — no standardized automated pipeline
 
-This project builds a **clinical-grade, explainable AI pipeline** that addresses all three.
+This project builds an **explainable AI pipeline** that addresses all three.
 
 -----
 
@@ -112,25 +112,10 @@ This project builds a **clinical-grade, explainable AI pipeline** that addresses
 ## 📂 Repository Structure
 
 ```
-📦 skin-lesion-ensemble/
-├── 📁 data/
-│   ├── 📄 preprocess.py          # Augmentation & rebalancing
-│   └── 📄 dataloader.py       # HAM10000 loader
-├── 📁 models/
-│   ├── 📄 resnet34.py            # ResNet34 fine-tuning
-│   ├── 📄 resnet50.py            # ResNet50 fine-tuning
-│   └── 📄 efficientnet_b0.py     # EfficientNet-B0 fine-tuning
-├── 📁 ensemble/
-│   ├── 📄 weighted_ensemble.py   # Adaptive weighting logic
-│   └── 📄 soft_voting.py         # Probability fusion
-├── 📁 explainability/
-│   └── 📄 gradcam.py             # Grad-CAM heatmap generation
-├── 📁 results/
-│   ├── 📁 training_curves/       # Loss & accuracy plots
-│   └── 📁 gradcam_outputs/       # Heatmap visualizations
-├── 📄 train.py                   # Main training script
-├── 📄 evaluate.py                # Test set evaluation
-├── 📄 requirements.txt
+📦 Adaptive-Weighted-Ensemble-of-CNN-Models-with-Focal-Loss-and-Grad-CAM/
+├── 📁 Dataset/      # HAM10000 setup and preprocessing
+├── 📁 Notebooks/    # Training, ensemble, evaluation and Grad-CAM notebooks
+├── 📁 Results/      # Training curves, metrics and Grad-CAM heatmaps
 └── 📄 README.md
 ```
 
@@ -190,44 +175,26 @@ Key finding: When EfficientNet-B0 failed to activate on a DF lesion, the ensembl
 ### Prerequisites
 
 ```bash
-pip install torch torchvision efficientnet-pytorch grad-cam numpy matplotlib scikit-learn pandas
+pip install torch torchvision efficientnet-pytorch grad-cam numpy matplotlib scikit-learn pandas jupyter
 ```
 
-### Clone & Setup
+### Clone
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-cd YOUR_REPO_NAME
-pip install -r requirements.txt
+git clone https://github.com/MProtik/Adaptive-Weighted-Ensemble-of-CNN-Models-with-Focal-Loss-and-Grad-CAM.git
+cd Adaptive-Weighted-Ensemble-of-CNN-Models-with-Focal-Loss-and-Grad-CAM
 ```
 
 ### Download HAM10000
 
 ```bash
-# Download from Kaggle
 kaggle datasets download -d kmader/skin-lesion-analysis-toward-melanoma-detection
-unzip skin-lesion-analysis-toward-melanoma-detection.zip -d data/
+unzip skin-lesion-analysis-toward-melanoma-detection.zip -d Dataset/
 ```
 
-### Train Individual Models
+### Run
 
-```bash
-python train.py --model resnet34 --epochs 30 --lr 1e-4 --batch_size 64
-python train.py --model resnet50 --epochs 30 --lr 1e-4 --batch_size 64
-python train.py --model efficientnet_b0 --epochs 30 --lr 1e-4 --batch_size 64
-```
-
-### Run Weighted Ensemble
-
-```bash
-python evaluate.py --ensemble --weights auto  # auto = F1-normalized
-```
-
-### Generate Grad-CAM Heatmaps
-
-```bash
-python explainability/gradcam.py --image path/to/lesion.jpg --model ensemble
-```
+Open the notebooks in `Notebooks/` and run them in order: train the three base models, build the weighted ensemble, then generate Grad-CAM heatmaps. Outputs are saved to `Results/`.
 
 -----
 
@@ -262,7 +229,7 @@ ResNet34          0.7587           0.7449
 ResNet50          0.7646           0.7477
 EfficientNet-B0   0.7478           0.7244
 ────────────────────────────────────────────────────────
-Weighted Ensemble 0.7974 ▲+3.3%   0.7782 ▲+3.4%
+Weighted Ensemble 0.7974 ▲+3.3 pts 0.7782 ▲+3.1 pts
 ────────────────────────────────────────────────────────
 ```
 
@@ -288,7 +255,7 @@ Weighted Ensemble 0.7974 ▲+3.3%   0.7782 ▲+3.4%
 |DF (ISIC_0029967)  |Female, 65|Lower extremity|EfficientNet-B0 failed; ensemble recovered via ResNet attention|
 
 
-> 📁 Full heatmap outputs available in `/results/gradcam_outputs/`
+> 📁 Heatmap outputs are in the `Results/` folder.
 
 -----
 
@@ -314,12 +281,12 @@ Weighted Ensemble 0.7974 ▲+3.3%   0.7782 ▲+3.4%
 If you use this work, please cite:
 
 ```bibtex
-@article{protik2024ensemble,
-  title     = {Adaptive Weighted Ensemble of CNN Models with Focal Loss and 
-               Grad-CAM Explainability for Skin Lesion Classification},
-  author    = {Protik, Mokabbir Zaman},
-  year      = {2024},
-  institution = {The People's University of Bangladesh}
+@unpublished{protik2026ensemble,
+  title  = {Adaptive Weighted Ensemble of CNN Models with Focal Loss and
+            Grad-CAM Explainability for Skin Lesion Classification},
+  author = {Protik, Mokabbir Zaman},
+  year   = {2026},
+  note   = {Under review at Pattern Recognition and Image Analysis (Springer)}
 }
 ```
 
@@ -332,9 +299,8 @@ If you use this work, please cite:
 |[1]|He et al. — *Deep Residual Learning for Image Recognition*, CVPR 2016           |
 |[2]|Tschandl et al. — *The HAM10000 Dataset*, Scientific Data 2018                  |
 |[3]|Tan & Le — *EfficientNet: Rethinking Model Scaling for CNNs*, ICML 2019         |
-|[4]|Szegedy et al. — *Inception-v4, Inception-ResNet*, AAAI 2017                    |
-|[5]|Selvaraju et al. — *Grad-CAM: Visual Explanations from Deep Networks*, ICCV 2017|
-|[6]|Lin et al. — *Focal Loss for Dense Object Detection*, ICCV 2017                 |
+|[4]|Selvaraju et al. — *Grad-CAM: Visual Explanations from Deep Networks*, ICCV 2017|
+|[5]|Lin et al. — *Focal Loss for Dense Object Detection*, ICCV 2017                 |
 
 -----
 
