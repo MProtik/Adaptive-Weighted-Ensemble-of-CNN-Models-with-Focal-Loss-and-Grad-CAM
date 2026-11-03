@@ -7,7 +7,8 @@
 **Mokabbir Zaman Protik**
 
 <p>
-  <img src="https://img.shields.io/badge/Paper-Under%20Review%20%C2%B7%20Springer%20PRIA-22c55e?style=for-the-badge"/>
+  <a href="https://doi.org/10.21203/rs.3.rs-11577913/v1"><img src="https://img.shields.io/badge/Preprint-Research%20Square-0ea5e9?style=for-the-badge"/></a>
+  <img src="https://img.shields.io/badge/Journal-Under%20Review%20%C2%B7%20Springer%20PRIA-22c55e?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/>
   <img src="https://img.shields.io/badge/Dataset-HAM10000-6366f1?style=for-the-badge"/>
 </p>
@@ -21,6 +22,8 @@
 Single CNN models for skin lesion classification often give unstable predictions and do not generalize well. Many ensembles try to fix this by averaging models equally, even though some models are more reliable than others. They also rarely show *why* they made a prediction.
 
 This project combines three fine-tuned CNNs (**ResNet34, ResNet50, EfficientNet-B0**) into an ensemble where each model's vote is **weighted by its validation F1 score**. Models are trained with **Focal Loss** to handle HAM10000's heavy class imbalance, and **Grad-CAM** heatmaps show which part of the image each model looked at.
+
+📄 **Preprint:** [doi.org/10.21203/rs.3.rs-11577913/v1](https://doi.org/10.21203/rs.3.rs-11577913/v1) (Research Square, not yet peer reviewed)
 
 The paper is currently **under review at *Pattern Recognition and Image Analysis* (Springer), 2026**.
 
@@ -162,12 +165,14 @@ pip install torch torchvision grad-cam numpy pandas matplotlib scikit-learn jupy
 ## Citation
 
 ```bibtex
-@unpublished{protik2026ensemble,
-  title  = {Adaptive Weighted Ensemble of CNN Models with Focal Loss and
-            Grad-CAM Explainability for Skin Lesion Classification},
-  author = {Protik, Mokabbir Zaman},
-  year   = {2026},
-  note   = {Under review at Pattern Recognition and Image Analysis (Springer)}
+@misc{protik2026ensemble,
+  title     = {Adaptive Weighted Ensemble of CNN Models with Focal Loss and
+               Grad-CAM Explainability for Skin Lesion Classification},
+  author    = {Protik, Mokabbir Zaman},
+  year      = {2026},
+  publisher = {Research Square},
+  doi       = {10.21203/rs.3.rs-11577913/v1},
+  note      = {Preprint}
 }
 ```
 
@@ -183,7 +188,7 @@ pip install torch torchvision grad-cam numpy pandas matplotlib scikit-learn jupy
 ## Author
 
 **Mokabbir Zaman Protik**
-B.Sc. in Computer Science, The People's University of Bangladesh
+B.Sc. in Computer Science and Engineering, The People's University of Bangladesh
 
 [![GitHub](https://img.shields.io/badge/GitHub-MProtik-181717?style=flat-square&logo=github)](https://github.com/MProtik)
 [![Email](https://img.shields.io/badge/Email-Contact-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:mokabbir.zaman.protik@gmail.com)
